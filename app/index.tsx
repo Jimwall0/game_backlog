@@ -1,3 +1,5 @@
+import { DatabaseProvider } from "@/components/DatabaseProvider";
+import InitDB from "@/components/table";
 import { router } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -10,15 +12,17 @@ export default function Index() {
         alignItems: "center",
       }}
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
-      <Pressable
-        style={styles.button}
-        onPress={() => {
-          router.push("./addLog");
-        }}
-      >
-        <Text style={styles.container}>Create Game Log</Text>
-      </Pressable>
+      <DatabaseProvider>
+        <InitDB />
+        <Pressable
+          style={styles.button}
+          onPress={() => {
+            router.push("./addLog");
+          }}
+        >
+          <Text style={styles.buttonText}>Create Game Log</Text>
+        </Pressable>
+      </DatabaseProvider>
     </View>
   );
 }
