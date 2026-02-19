@@ -5,14 +5,14 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 export default function Index() {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <DatabaseProvider>
+    <DatabaseProvider>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
         <InitDB />
         <Pressable
           style={styles.button}
@@ -22,8 +22,8 @@ export default function Index() {
         >
           <Text style={styles.buttonText}>Create Game Log</Text>
         </Pressable>
-      </DatabaseProvider>
-    </View>
+      </View>
+    </DatabaseProvider>
   );
 }
 

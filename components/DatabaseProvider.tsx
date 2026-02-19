@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { View } from "react-native";
 import InitDB from "./table";
 
-export function DatabaseProvider({ children }: { children: React.ReactNode }) {
+export function DatabaseProvider({ children }: { children?: React.ReactNode }) {
   return (
     <Suspense fallback={<View />}>
       <InitDB />
