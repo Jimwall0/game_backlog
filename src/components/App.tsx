@@ -1,67 +1,43 @@
-import { SQLiteProvider } from "expo-sqlite";
-import { StyleSheet, View } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
+import React from "react";
+import AddItemScreen from "./AddItemScreen";
+import HomeScreen from "./HomeScreen";
 
+// Type for your game item
 export type Game = {
   id: number;
-  title: string;
+  name: string;
   studio: string;
   reason?: string;
 };
 
+// Type for the init callback
+type InitDBFunction = (db: SQLiteDatabase) => Promise<void>;
+
+const Stack = createNativeStackNavigator();
+
 export default function App() {
-  const initializDB = async (db) => {
+  const initializeDB: InitDBFunction = async (db) => {
     await db.execAsync(`
       CREATE TABLE IF NOT EXISTS items (
-      id Integer Primary Key NOT NULL,
-      name TEXT NOT NULL,
-      studio TEXT NOT NULL,
-      reason TEXT
+        id INTEGER PRIMARY KEY NOT NULL,
+        name TEXT NOT NULL,
+        studio TEXT NOT NULL,
+        reason TEXT
       );
-      `);
+    `);
   };
+
   return (
-    <View style={StyleSheet.container}>
-      <SQLiteProvider database="db.db" onINit={initialDB}>
-        <display />
-        <Content />
-      </SQLiteProvider>
-    </View>
+    <SQLiteProvider databaseName="app.db" onInit={initializeDB}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="AddItem" component={AddItemScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </SQLiteProvider>
   );
 }
-
-export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#00fcf4",
-  },
-  listITem: {
-    fontSize: 18,
-    marginVertical: 5,
-    padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#ddd",
-  },
-  button: {
-    marginVertical: 10,
-  },
-  buttonRed: {
-    backgroundColor: "#e74c3c",
-  },
-  input: {
-    fontSize: 18,
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 10,
-    borderRadius: 8,
-    marginBottom: 20,
-    backgroundColor: "#fff",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-  },
-});
