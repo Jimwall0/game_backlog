@@ -1,8 +1,15 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabaseSync('app.db');
+type Game = {
+  id: number;
+  title: string;
+  studio: string;
+  reason?: string;
+}
 
-export const initDB = () => {
+const db: SQLite.SQLiteDatabase = SQLite.openDatabaseSync('app.db');
+
+export const initDB = (): void => {
   db.execSync(`
     CREATE TABLE IF NOT EXISTS games (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -11,9 +18,10 @@ export const initDB = () => {
       reason TEXT
     );
   `);
-  const count = db.getFirstSync(`SELECT COUNT(*) as count FROM games;`);
 
-  if (count.count === 0) {
+  const count = db.getFirstSync<{ count: number}>(`SELECT COUNT(*) as count FROM games;`);
+
+  if (count?.count === 0) {
     db.runSync(
       `INSERT INTO games (title, studio, reason) VALUES (?, ?, ?);`,
       ['Mincraft', 'Mojang', "Don't own it for some reason"]
@@ -22,30 +30,30 @@ export const initDB = () => {
 };
 
 // 🔹 CREATE
-export const insertGame = (title, studio, reason) => {
-  return db.runSync(
+export const insertGame = (title: string, studio: string, reason?: string): void => {
+  db.runSync(
     `INSERT INTO games (title, studio, reason) VALUES (?, ?, ?);`,
-    [title, studio, reason]
+    [title, studio, reason ?? null]
   );
 };
 
 
 // 🔹 READ
-export const getAllGames = () => {
+export const getAllGames = (): Game[] => {
   return db.getAllSync(`SELECT * FROM games;`);
 };
 
 // 🔹 UPDATE
-export const updateGame = (id, title, studio, reason) => {
-  return db.runSync(
+export const updateGame = (id: number, title: string, studio: string, reason?:string): void => {
+  db.runSync(
     `UPDATE games SET title = ?, studio = ?, reason = ? WHERE id = ?;`,
-    [title, studio, reason, id]
+    [title, studio, reason ?? null, id]
   );
 };
 
 
 // 🔹 DELETE
-export const deleteGame = (id) => {
+export const deleteGame = (id: number) => {
   return db.runSync(
     `DELETE FROM games WHERE id = ?;`,
     [id]

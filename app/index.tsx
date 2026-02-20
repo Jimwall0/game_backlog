@@ -1,5 +1,6 @@
+import { Link } from 'expo-router';
 import { Text, View } from "react-native";
-import App from "/component/App";
+import App from "../src/components/App";
 
 export default function Index() {
   return (
@@ -11,6 +12,7 @@ export default function Index() {
       }}
     >
       <Text><App/></Text>
+      <Link href="./app/addLog" style={{color: 'blue'}}>Add Game</Link>
     </View>
   );
 }
