@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { FlatList, SafeAreaView, Text, View } from 'react-native';
-import { getAllGames, initDB } from '../database/database';
+import { getAll, initDB } from '../database/database';
 
-type Game = {
+export type Game = {
   id: number;
   title: string;
   studio: string;
@@ -11,12 +11,18 @@ type Game = {
 
 export default function App() {
     const [gamelist, setgamelist] = useState<Game[]>([]);
-  useEffect(() => {
-    initDB();
-    console.log("Database Initialized");
-    const games = getAllGames();
-    setgamelist(games);
-  }, []);
+
+      useEffect( () => {
+        const load = async () => {
+        try {
+          await initDB();
+          const data: Game[] = await getAll();
+          setgamelist(data);
+        } catch (error) {
+          console.log(error);
+        }};
+        load();
+      }, []);
 
   return (
     <SafeAreaView>

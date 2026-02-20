@@ -12,7 +12,7 @@ export default function Index() {
       }}
     >
       <Text><App/></Text>
-      <Link href="./app/addLog" style={{color: 'blue'}}>Add Game</Link>
+      <Link href="./addLog" style={{color: 'blue'}}>Add Game</Link>
     </View>
   );
 }
