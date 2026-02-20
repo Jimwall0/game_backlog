@@ -1,5 +1,11 @@
 import * as SQLite from 'expo-sqlite';
 
+type NewGame = {
+  title: string;
+  studio: string;
+  reason?: string;
+}
+
 type Game = {
   id: number;
   title: string;
@@ -7,7 +13,7 @@ type Game = {
   reason?: string;
 }
 
-let db: SQLite.SQLiteDatabase | null = null;
+let db: SQLite.SQLiteDatabase;
 
 export const initDB = async () => {
   try {
@@ -19,7 +25,7 @@ export const initDB = async () => {
     studio TEXT NOT NULL,
     reason TEXT
   );
-  INSERT OR IGNORE INTO games  (id, title, studio, reason) VALUES (1, 'Mincraft', 'Mojang', 'Do not have it');
+  INSERT OR IGNORE INTO games  (title, studio, reason) VALUES ('Mincraft', 'Mojang', 'Do not have it');
 `);
 console.log('database initialized');
 } catch (error) {
@@ -30,9 +36,21 @@ console.log('database initialized');
 
 export const getAll = async () => {
   try {
-    return await db.getAllAsync(`SELECT * FROM games`);
+    const result = await db.getAllAsync(`SELECT * FROM games`);
+    return result as Game[];
   } catch (error) {
     console.log("Error in retrieving Database", error);
     return [];
   }
+}
+
+export const createGame = async ({title, studio, reason}: NewGame) => {
+  try {
+    return await db?.runAsync(`INSERT OR IGNORE INTO games (title, studio, reason) VALUES (?, ?, ?);`,
+      [title, studio, reason ?? null]
+    );
+ } catch (error) {
+  console.log("Error in adding game", error);
+  return null
+ }
 }
