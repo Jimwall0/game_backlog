@@ -1,24 +1,24 @@
-import * as SQLite from 'expo-sqlite';
+import * as SQLite from "expo-sqlite";
 
 type NewGame = {
   title: string;
   studio: string;
   reason?: string;
-}
+};
 
 type Game = {
   id: number;
   title: string;
   studio: string;
   reason?: string;
-}
+};
 
 let db: SQLite.SQLiteDatabase;
 
 export const initDB = async () => {
   try {
-  db = await SQLite.openDatabaseAsync('app')
-  await db.execAsync(`
+    db = await SQLite.openDatabaseAsync("app");
+    await db.execAsync(`
   CREATE TABLE IF NOT EXISTS games (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     title TEXT NOT NULL,
@@ -27,11 +27,11 @@ export const initDB = async () => {
   );
   INSERT OR IGNORE INTO games  (title, studio, reason) VALUES ('Mincraft', 'Mojang', 'Do not have it');
 `);
-console.log('database initialized');
-} catch (error) {
-  console.log("Issue with intializing Database", error);
-  return error;
-}
+    console.log("database initialized");
+  } catch (error) {
+    console.log("Issue with intializing Database", error);
+    return error;
+  }
 };
 
 export const getAll = async () => {
@@ -42,15 +42,16 @@ export const getAll = async () => {
     console.log("Error in retrieving Database", error);
     return [];
   }
-}
+};
 
-export const createGame = async ({title, studio, reason}: NewGame) => {
+export const createGame = async ({ title, studio, reason }: NewGame) => {
   try {
-    return await db?.runAsync(`INSERT OR IGNORE INTO games (title, studio, reason) VALUES (?, ?, ?);`,
-      [title, studio, reason ?? null]
+    return await db?.runAsync(
+      `INSERT OR IGNORE INTO games (title, studio, reason) VALUES (?, ?, ?);`,
+      [title, studio, reason ?? null],
     );
- } catch (error) {
-  console.log("Error in adding game", error);
-  return null
- }
-}
+  } catch (error) {
+    console.log("Error in adding game", error);
+    return null;
+  }
+};
