@@ -19,14 +19,13 @@ export const initDB = async () => {
   try {
     db = await SQLite.openDatabaseAsync("app");
     await db.execAsync(`
-  CREATE TABLE IF NOT EXISTS games (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    title TEXT NOT NULL,
-    studio TEXT NOT NULL,
-    reason TEXT
-  );
-  INSERT OR IGNORE INTO games  (title, studio, reason) VALUES ('Mincraft', 'Mojang', 'Do not have it');
-`);
+        CREATE TABLE IF NOT EXISTS games (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        studio TEXT NOT NULL,
+        reason TEXT
+        );
+  `);
     console.log("database initialized");
   } catch (error) {
     console.log("Issue with intializing Database", error);
@@ -54,4 +53,8 @@ export const createGame = async ({ title, studio, reason }: NewGame) => {
     console.log("Error in adding game", error);
     return null;
   }
+};
+
+export const releod = async (setlist: CallableFunction) => {
+  setlist(await db.getAllAsync("SELECT * FROM games"));
 };

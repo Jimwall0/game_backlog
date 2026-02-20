@@ -1,23 +1,26 @@
 import { Link } from "expo-router";
-import { useState,useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Text, View } from "react-native";
-import App from "../src/components/App";
-import {getAll} from '../src/database/database';
-
-export type Game = {
-  id: number;
-  title: string;
-  studio: string;
-  reason?: string;
-}
+import App, { Game } from "../src/components/App";
+import { getAll, initDB } from "../src/database/database";
 
 export default function Index() {
-  const { page, setpage } = useState([]);
+  const { list, setlist } = useState<Game[]>([]);
 
-  const reload = () => {
+  const reload = async () => {
     const data: Game[] = await getAll();
-    setpage(data);
-  }
+    setlist(data);
+  };
+
+  useEffect(() => {
+    try {
+      initDB();
+      reload(setpage);
+    } catch (error) {
+      console.log("Initialize Failed", error);
+    }
+  });
+
   return (
     <View
       style={{
@@ -27,7 +30,7 @@ export default function Index() {
       }}
     >
       <Text>
-        <App page=page/>
+        <App />
       </Text>
       <Link href="./addLog" style={{ color: "blue" }}>
         Add Game
