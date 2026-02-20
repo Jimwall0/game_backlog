@@ -18,11 +18,10 @@ export default function AddItemScreen() {
       return;
     }
 
-    // Insert the new row
-    await db.execAsync(
-      "INSERT INTO items (name, studio, reason) VALUES (?, ?, ?);",
-      [name, studio, reason || null],
-    );
+    await db.execAsync(`
+  INSERT INTO items (name, studio, reason)
+  VALUES ('${name}', '${studio}', '${reason || ""}');
+`);
 
     // Go back to HomeScreen
     navigation.goBack();

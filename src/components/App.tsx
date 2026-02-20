@@ -1,4 +1,3 @@
-import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { SQLiteDatabase, SQLiteProvider } from "expo-sqlite";
 import React from "react";
@@ -19,25 +18,29 @@ type InitDBFunction = (db: SQLiteDatabase) => Promise<void>;
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  // Ensure table exists before any queries
   const initializeDB: InitDBFunction = async (db) => {
-    await db.execAsync(`
-      CREATE TABLE IF NOT EXISTS items (
-        id INTEGER PRIMARY KEY NOT NULL,
-        name TEXT NOT NULL,
-        studio TEXT NOT NULL,
-        reason TEXT
-      );
-    `);
+    try {
+      await db.execAsync(`
+CREATE TABLE IF NOT EXISTS items (
+  id INTEGER PRIMARY KEY NOT NULL,
+  name TEXT NOT NULL,
+  studio TEXT NOT NULL,
+  reason TEXT
+);  
+      `);
+      console.log("Database initialized ✅");
+    } catch (e) {
+      console.error("Failed to initialize database:", e);
+    }
   };
 
   return (
     <SQLiteProvider databaseName="app.db" onInit={initializeDB}>
-      <NavigationContainer>
-        <Stack.Navigator>
-          <Stack.Screen name="Home" component={HomeScreen} />
-          <Stack.Screen name="AddItem" component={AddItemScreen} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="AddItem" component={AddItemScreen} />
+      </Stack.Navigator>
     </SQLiteProvider>
   );
 }

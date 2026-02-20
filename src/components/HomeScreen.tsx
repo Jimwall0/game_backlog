@@ -11,8 +11,12 @@ export default function HomeScreen() {
   const [items, setItems] = useState<Game[]>([]);
 
   const loadItems = async () => {
-    const results = await db.getAllAsync("SELECT * FROM items");
-    setItems(results as Game[]);
+    try {
+      const results = await db.getAllAsync("SELECT * FROM items");
+      setItems(results as Game[]);
+    } catch (e) {
+      console.error("Failed to load items:", e);
+    }
   };
 
   useFocusEffect(
