@@ -17,7 +17,7 @@ let db: SQLite.SQLiteDatabase;
 
 export const initDB = async () => {
   try {
-    db = await SQLite.openDatabaseAsync("app");
+    db = await SQLite.openDatabaseAsync("database");
     await db.execAsync(`
         CREATE TABLE IF NOT EXISTS games (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,7 +45,7 @@ export const getAll = async () => {
 
 export const createGame = async ({ title, studio, reason }: NewGame) => {
   try {
-    return await db?.runAsync(
+    return await db.runAsync(
       `INSERT OR IGNORE INTO games (title, studio, reason) VALUES (?, ?, ?);`,
       [title, studio, reason ?? null],
     );
@@ -55,6 +55,6 @@ export const createGame = async ({ title, studio, reason }: NewGame) => {
   }
 };
 
-export const releod = async (setlist: CallableFunction) => {
-  setlist(await db.getAllAsync("SELECT * FROM games"));
+export const refresh = async () => {
+  useEffect(() => {});
 };
